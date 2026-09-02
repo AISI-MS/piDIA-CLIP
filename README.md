@@ -1,6 +1,43 @@
-# DIA-CLIP: A Universal Representation Learning Framework for Zero-Shot DIA Proteomics
+# πDIA-CLIP: Efficient Identification of Highly Heterogeneous Proteomics Data via a Generalized Zero-Shot Framework
 
-DIA-CLIP is a representation learning and inference framework for DIA (Data-Independent Acquisition) proteomics data, supporting zero-shot peptide identification and quantification.
+[![bioRxiv](https://img.shields.io/badge/bioRxiv-2026.02.09.704949-brightgreen)](https://doi.org/10.64898/2026.02.09.704949)
+[![Zenodo](https://img.shields.io/badge/Zenodo-10.5281%2Fzenodo.18863866-blue)](https://zenodo.org/records/21850269)
+
+## Description
+
+**πDIA-CLIP** (Data-Independent Acquisition with Contrastive Learning Integrated Proteomics) is a generalized framework for zero-shot DIA-MS analysis. The prefix **π** denotes the [π-HuB project](https://doi.org/10.1038/s41586-024-08249-7), a global initiative for proteomics research.
+
+If you use πDIA-CLIP in your work, please cite:
+
+> Liao Y, Li Y, Xiao Z, Miao C, Zhao X, Zhang Y, Wen H, E W, Chang C, Zhang W. πDIA-CLIP: efficient identification of highly heterogeneous proteomics data via a generalized zero-shot framework. *bioRxiv* (2026). https://doi.org/10.64898/2026.02.09.704949
+
+## Key Features
+
+- **Zero-shot inference-only architecture** — no run-specific semi-supervised re-training; plug-and-play PSM re-scoring after standard RT calibration and XIC extraction
+- **Cross-modal contrastive learning** — aligns peptide sequences and multi-dimensional XIC signals in a shared latent space via a transformer-based sequence encoder and a specialized spectral encoder
+- **Hybrid encoder–decoder scoring** — combines aligned latent features with co-elution statistics for calibrated PSM scores and fragment-based quantification
+- **Broad applicability** — validated on bulk DIA, multi-species mixtures, metaproteomics, spatial proteomics, and single-cell proteomics
+- **Hardware-agnostic efficiency** — CPU and GPU inference; substantially faster than existing tools
+
+## Workflow
+
+πDIA-CLIP integrates into the standard peptide-centric DIA-MS workflow at the **PSM re-scoring** stage. Retention-time calibration and peak-group generation can be performed by mainstream tools (e.g., DIA-NN, MaxDIA, Spectronaut). πDIA-CLIP then extracts precursor and fragment XICs and performs zero-shot re-scoring, FDR estimation, and quantification.
+
+```
+DIA-MS raw data → RT calibration / XIC extraction (DIA-NN or compatible tools)
+                → πDIA-CLIP zero-shot PSM re-scoring & quantification
+                → Target-decoy FDR filtering → Identification & quantification tables
+```
+
+## Software
+
+| Component | Description |
+|-----------|-------------|
+| **Command-line inference** | This repository (`scripts/infer_script.py`) |
+| **GUI application** | Pre-built executables with graphical interface — [Releases](https://github.com/Elcherneske/DIA-CLIP/releases/) |
+| **Agent system** | Model-based agent for interactive analysis — [Web access](http://otfo1466981.bohrium.tech:50002/) |
+
+Training data, benchmark results, and example files (mzML, spectral library, model weights) are available on [Zenodo](https://doi.org/10.5281/zenodo.18863866).
 
 ---
 
@@ -167,4 +204,19 @@ Example: with `mzml_path = sample1.mzML` and `out_dir = ./results` you get:
 
 ## Citation
 
-Liao Y, Wen H, E W, et al. DIA-CLIP: a universal representation learning framework for zero-shot DIA proteomics[J]. bioRxiv, 2026: 2026.02. 09.704949.
+```bibtex
+@article{Liao2026piDIACLIP,
+  title   = {πDIA-CLIP: efficient identification of highly heterogeneous proteomics data via a generalized zero-shot framework},
+  author  = {Liao, Yucheng and Li, Yongge and Xiao, ZeXu and Miao, ChenChen and Zhao, Xingpu and Zhang, Yuanyuan and Wen, Han and E, Weinan and Chang, Cheng and Zhang, Weijie},
+  journal = {bioRxiv},
+  year    = {2026},
+  doi     = {10.1101/2026.02.09.704949}
+}
+```
+
+## Contact
+
+For questions or collaboration inquiries, please contact the corresponding authors:
+
+- Cheng Chang — changcheng@ncpsb.org.cn
+- Weijie Zhang — zhangwj@aisi.ac.cn
