@@ -1,7 +1,7 @@
 import os
 from tqdm import tqdm
 from .SpectraUtils import XICExtractor
-from .DIANNInfoReader import DIANNInfoReader
+from .DIANNParquetReader import DIANNParquetReader
 
 import logging
 logging.basicConfig(
@@ -67,7 +67,8 @@ class XICManager:
     def __init__(self, args, mzml_path):
         self.args = args
         self.out_dir = args.get_config('General', 'out_dir')
-        self.meta_file_path = os.path.join(self.out_dir, 'diann', 'diann_info.tsv')
+        self.meta_report_path = os.path.join(self.out_dir, 'diann', 'all_report.parquet')
+        self.meta_lib_path = os.path.join(self.out_dir, 'diann', 'all_lib.parquet')
         self.mzml_path = mzml_path
         self.mzml_name = os.path.basename(mzml_path).replace('.mzML', '')
         self.threads = args.get_config('General', 'threads', default=1)
@@ -77,15 +78,17 @@ class XICManager:
     def process(self):
         if not os.path.exists(self.out_dir):
             raise ValueError(f"Output directory {self.out_dir} does not exist")
-        if not os.path.exists(self.meta_file_path):
-            raise ValueError(f"Meta file {self.meta_file_path} does not exist")
+        if not os.path.exists(self.meta_report_path):
+            raise ValueError(f"Meta file {self.meta_report_path} does not exist")
+        if not os.path.exists(self.meta_lib_path):
+            raise ValueError(f"Meta file {self.meta_lib_path} does not exist")
         if not os.path.exists(self.mzml_path):
             raise ValueError(f"MzML file {self.mzml_path} does not exist")
         
-        reader = DIANNInfoReader()
-        reader.read(self.meta_file_path)
+        reader = DIANNParquetReader()
+        reader.read(self.meta_lib_path, self.meta_report_path)
         peptide_infos = reader.get_all_peptide_info()
-        logging.info(f"read {len(peptide_infos)} results from {self.meta_file_path}")
+        logging.info(f"read {len(peptide_infos)} results from {self.meta_lib_path} and {self.meta_report_path}")
 
         xic_extractor = XICExtractor(num_threads=self.threads, mode='rt_range')
 

@@ -45,16 +45,17 @@ def main():
 
         model_infer.infer(data_loader=test_loader, xic_datas=xic_datas, basename=os.path.basename(mzml_path).replace('.mzML', ''))
 
-        logging.info(f"Inference Completed, Results saved to {args.get_config('General', 'out_dir')}/{os.path.basename(mzml_path).replace('.mzML', '')}.all.tsv")
+        logging.info(
+            "Inference completed. DIA-CLIP all/FDR Parquet and FDR TSV were saved under %s",
+            args.get_config('General', 'out_dir'),
+        )
 
 def run_diann(args, mzml_path):
     diann_dir = args.get_config('Preprocess', 'diann_dir')
-    if os.path.exists(os.path.join(diann_dir, 'mstoolkit', 'diann-alpha-xic')):
-        diann_path = os.path.join(diann_dir, 'mstoolkit', 'diann-alpha-xic')
-    elif os.path.exists(os.path.join(diann_dir, 'mstoolkit', 'diann-alpha-xic.exe')):
-        diann_path = os.path.join(diann_dir, 'mstoolkit', 'diann-alpha-xic.exe')
-    else:
-        raise ValueError(f"Error: No diann-alpha-xic or diann-alpha directory found in {diann_dir}")
+    executable_name = 'diann.exe' if os.name == 'nt' else 'diann-linux'
+    diann_path = os.path.join(diann_dir, executable_name)
+    if not os.path.isfile(diann_path):
+        raise ValueError(f"Error: No {executable_name} found in {diann_dir}")
     library_path = args.get_config('Preprocess', 'library_path')
     threads = args.get_config('General', 'threads', default=12)
     out_dir = os.path.join(args.get_config('General', 'out_dir'), 'diann')
@@ -67,11 +68,15 @@ def run_diann(args, mzml_path):
         "--f", mzml_path,
         "--lib", library_path,
         "--threads", str(threads),
-        "--out", "out.tsv",
-        "--qvalue", "0.01",
+        "--out", os.path.join(out_dir, 'all_report.parquet'),
+        "--out-lib", os.path.join(out_dir, 'all_lib.parquet'),
+        "--qvalue", "1.0",
+        "--out-lib-qvalue", "1.0",
         "--matrices",
         "--unimod4",
+        "--reanalyse",
         "--rt-profiling",
+        "--report-decoys",
     ]
 
     logging.info(f"Running DIA-NN with command: {' '.join(cmd)}")
@@ -82,9 +87,9 @@ def run_diann(args, mzml_path):
     except subprocess.CalledProcessError as e:
         logging.error(f"Error running DIA-NN: {e}")
 
-    for file in os.listdir('.'):
-        if file.endswith('.tsv'):
-            shutil.move(file, os.path.join(out_dir, file))
+    # for file in os.listdir('.'):
+    #     if file.endswith('.tsv'):
+    #         shutil.move(file, os.path.join(out_dir, file))
     logging.info(f"DIA-NN results saved to {out_dir}")
 
 if __name__ == "__main__":

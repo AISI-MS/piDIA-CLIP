@@ -11,3 +11,4 @@ tensorboard==2.19.0
 # Progress & I/O
 tqdm==4.67.1
 lxml==6.0.0
+pyarrow==20.0.0

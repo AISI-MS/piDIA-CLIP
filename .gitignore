@@ -167,5 +167,9 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 
+# DIA-NN binaries and runtime libraries are downloaded separately.
+scripts/diann-2.0/*
+!scripts/diann-2.0/.gitkeep
+
 # PyPI configuration file
 .pypirc
