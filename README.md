@@ -34,10 +34,45 @@ DIA-MS raw data → RT calibration / XIC extraction (DIA-NN or compatible tools)
 | Component | Description |
 |-----------|-------------|
 | **Command-line inference** | This repository (`scripts/infer_script.py`) |
-| **GUI application** | Pre-built executables with graphical interface — [Releases](https://github.com/Elcherneske/DIA-CLIP/releases/) |
-| **Agent system** | Model-based agent for interactive analysis — [Web access](http://otfo1466981.bohrium.tech:50002/) |
+| **GUI application** | Pre-built Windows application with a graphical interface — [GitHub Releases](https://github.com/AISI-MS/piDIA-CLIP/releases) |
+| **Agent system** | Browser-based assistant for interactive analysis — [Primary access](http://yxxb1548675.bohrium.tech:50002/) |
 
 Training data, benchmark results, and example files (mzML, spectral library, model weights) are available on [Zenodo](https://doi.org/10.5281/zenodo.18863866).
+
+### GUI application
+
+Users who prefer not to configure the Python environment or run the command-line workflow can download the packaged GUI installer from [GitHub Releases](https://github.com/AISI-MS/piDIA-CLIP/releases). The installer includes the inference runtime, DIA-NN runtime, and checkpoint model files.
+
+The GUI is intended for 64-bit Windows 10/11. At least 20 GB of free disk space is recommended for installation and output files. Install the application to a path containing only letters, numbers, or underscores; avoid spaces and non-ASCII or special characters.
+
+To run an analysis:
+
+1. Open the application and create a new **πDIA-CLIP** task.
+2. Select a spectral library (`.parquet`, `.tsv`, or `.fasta`) and add one or more mzML files.
+3. Select the DIA-NN backbone, inference mode, device, thread count, batch size, and FDR threshold. DIA-NN 2.0 with a Parquet library is recommended for the current workflow.
+4. Confirm that the validation panel reports **Ready to run**, then click **Run**.
+5. Monitor the terminal and progress panels, and open the configured output directory after the task completes.
+
+The complete **πDIA-CLIP GUI Software User Manual** is provided with the release documentation.
+
+### Agent system
+
+The πDIA-CLIP Agent provides a browser-based conversational interface for data preparation, inference, result download, and visualization. Use the primary address when available; the fallback nodes have fewer CPU and memory resources and may run more slowly.
+
+- **Primary:** [http://yxxb1548675.bohrium.tech:50002/](http://yxxb1548675.bohrium.tech:50002/)
+- **Fallback 1:** [http://qjqj1548978.bohrium.tech:50002/](http://qjqj1548978.bohrium.tech:50002/)
+- **Fallback 2:** [http://rlas1548980.bohrium.tech:50002/](http://rlas1548980.bohrium.tech:50002/)
+
+Open one of the addresses in a browser, upload the required files, and describe the requested workflow in the message box. Common workflows include:
+
+- **mzML + spectral library:** run direct identification using an uploaded `.tsv` or `.parquet` library.
+- **RAW + FASTA:** convert RAW data to mzML, generate a spectral library, and run inference.
+- **FASTA only:** generate a reusable spectral library.
+- **Identification results + mzML:** open previously generated results in the interactive viewer without rerunning inference.
+
+For the DIA-NN 2.0 workflow with a Parquet library, select **Deep** mode for routine analyses or **Precise** mode when stricter false-positive control is preferred. Progress and logs are displayed in the chat, and generated files can be downloaded when processing finishes. Results from the current workflow can also be opened in the web viewer for chromatogram, MS/MS spectrum, and protein-coverage inspection.
+
+The complete **πDIA-CLIP Agent User Manual** is provided with the release documentation.
 
 ---
 
